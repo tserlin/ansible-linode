@@ -1,0 +1,36 @@
+---
+# Usage:
+#   $ export LINODE_API_KEY=T4UZ8<snip>
+#   $ ansible-playbook provision.yml
+#
+- name: Provision new linode
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+#  vars_files:
+#  - vars/config.yml
+
+  tasks:
+  - name: Create linode server via Linode API
+    # http://docs.ansible.com/ansible/latest/linode_module.html
+    # datacenter: 2 (Dallas), 3 (Fremont), 4 (Atlanta), 6 (Newark)
+    # distribution: 146 (Ubuntu 16.04), 129 (CentOS 7)
+    linode:
+      name: 1
+      #plan: "{{ linode_plan }}"
+      plan: 1
+      #datacenter: "{{ linode_datacenter }}"
+      datacenter: 6
+      #distribution: "{{ linode_distribution }}"
+      distribution: 129
+      #ssh_pub_key: "{{ root_ssh_pub_key }}"
+      #swap: "{{ linode_swap }}"
+      swap: 256
+      wait: yes
+      wait_timeout: 600
+      state: present
+    register: linode
+
+  - name: Show me the registered linode
+    debug: var=linode
